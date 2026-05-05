@@ -1,40 +1,29 @@
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
+package tests;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import java.time.Duration;
 
-public class DirtyAutomation {
-    // SMELL: Large Class y Feature Envy
-    @Test
-    public void test() {
-        // SMELL: Shotgun Surgery (URL y credenciales hardcodeadas)
-        WebDriver d = new ChromeDriver();
-        d.get("https://www.saucedemo.com/");
+public class BaseTest {
 
-        // SMELL: Nombres crípticos (d, u, p)
-        d.findElement(By.id("user-name")).sendKeys("standard_user");
-        d.findElement(By.id("password")).sendKeys("secret_sauce");
-        d.findElement(By.id("login-button")).click();
+    protected WebDriver driver;
+    protected final String BASE_URL = "https://www.saucedemo.com/";
+    protected final String VALID_USER = "standard_user";
+    protected final String VALID_PASS = "secret_sauce";
 
-        // SMELL: Long Method (Login y compra en un solo bloque)
-        d.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
-        d.findElement(By.className("shopping_cart_link")).click();
-        d.findElement(By.id("checkout")).click();
-
-        // SMELL: Duplicate Code (Se repetiría en cada test nuevo)
-        d.findElement(By.id("first-name")).sendKeys("Nombre");
-        d.findElement(By.id("last-name")).sendKeys("Apellido");
-        d.findElement(By.id("postal-code")).sendKeys("12345");
-        d.findElement(By.id("continue")).click();
-        d.findElement(By.id("finish")).click();
-
-        if(d.getCurrentUrl().contains("checkout-complete")) {
-            System.out.println("Ok");
-        }
-        d.quit(); // SMELL: Dead Code si el test falla antes
+    @BeforeEach
+    void setUp() {
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.get(BASE_URL);
     }
-    it commit -m "feat: functional dirty code with 10 identified smells"
 
+    @AfterEach
+    void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 }
-it commit -m "feat: functional dirty code with 10 identified smells"
-
